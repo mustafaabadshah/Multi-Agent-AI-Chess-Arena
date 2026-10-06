@@ -1,138 +1,103 @@
 # ♟️ Multi-Agent AI Chess Arena
 
-[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Stockfish](https://img.shields.io/badge/Stockfish-19%20UCI-critical)](https://stockfishchess.org/)
-[![Groq](https://img.shields.io/badge/Groq-LPU%20Inference-f55036)](https://groq.com/)
+A full-stack platform for evaluating AI reasoning and strategy in chess. The project combines a FastAPI backend, a React + TypeScript frontend, and multiple LLM-powered chess agents that compete in live matches and tournament brackets.
 
-**Multi-Agent AI Chess Arena** is an advanced full-stack platform designed to evaluate, benchmark, and visualize the strategic reasoning, tactical calculation, and decision-making capabilities of frontier Large Language Models (LLMs) through competitive chess.
+## What this project does
 
-Featuring real-time 1v1 AI matches and **autonomous 4-to-6 model knockout tournaments**, the platform combines high-level LLM reasoning with strict rule enforcement via `python-chess` and objective evaluation via the Stockfish engine.
+- Runs real chess games between multiple AI agents
+- Enforces legal moves through `python-chess`
+- Uses Groq-hosted LLMs for move selection and strategic reasoning
+- Applies safety checks and tactical validation before accepting moves
+- Displays live board state, evaluation, move history, and tournament results
+- Supports tournament-style brackets and post-game analysis
 
----
+## Architecture
 
-## 🏛️ System Architecture
-
-```
-                       MULTI-AGENT AI CHESS ARENA
- 
-             ┌───────────────────────────────────────────────┐
-             │       React 19 Frontend (Vite + TypeScript)   │
-             │   Interactive Board • Live Bracket • Spectate │
-             └───────────────────────┬───────────────────────┘
-                                     │ REST & Real-Time WebSockets
-                                     ▼
-             ┌───────────────────────────────────────────────┐
-             │              FastAPI Backend Server           │
-             │   Tournament Engine • Game Loop • Orchestrator│
-             └───────┬───────────────────────────────┬───────┘
-                     │                               │
-         ┌───────────┴───────────┐       ┌───────────┴───────────┐
-         ▼                       ▼       ▼                       ▼
- ┌───────────────┐       ┌───────────────┐       ┌───────────────┐
- │   Groq Agent  │       │   Groq Agent  │       │   Groq Agent  │
- │ Qwen 3.8 27B  │       │  GPT-OSS 120B │       │  GPT-OSS 20B  │
- └───────┬───────┘       └───────┬───────┘       └───────┬───────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 ▼
-                 ┌───────────────────────────────┐
-                 │    python-chess (Referee)     │
-                 │     Authoritative Legality    │
-                 └───────────────┬───────────────┘
-                                 ▼
-                 ┌───────────────────────────────┐
-                 │     2-Ply Blunder Guard       │
-                 │   Tactical Re-evaluation Alert│
-                 └───────────────┬───────────────┘
-                                 ▼
-                 ┌───────────────────────────────┐
-                 │      Stockfish Engine 19      │
-                 │   Objective CPL / Accuracy %  │
-                 └───────────────┬───────────────┘
-                                 ▼
-                 ┌───────────────────────────────┐
-                 │   PostgreSQL / SQLite Storage │
-                 │  Tournaments • Moves • Reports│
-                 └───────────────────────────────┘
+```text
+React Frontend (Vite + TypeScript)
+        │
+        ├─ REST API calls
+        └─ WebSocket updates
+               ↓
+FastAPI Backend
+        │
+        ├─ Game engine / rules enforcement
+        ├─ Agents and personalities
+        ├─ Tournament orchestration
+        ├─ Stockfish evaluation
+        └─ SQLite/PostgreSQL storage
 ```
 
----
+## Tech stack
 
-## ✨ Key Features
+- Backend: Python 3.11+, FastAPI, SQLAlchemy, python-chess, Pydantic v2
+- Frontend: React 19, TypeScript, Vite, Tailwind CSS, Recharts
+- AI: Groq API + configurable LLM models
+- Evaluation: Stockfish UCI engine
+- Testing: Pytest and Vitest
 
-### 🏆 1. Knockout Tournament Arena (4 to 6 Models)
-- **Bracket Progression:** Supports 4-player brackets (Semifinals, 3rd Place, Grand Final) and 6-player brackets (Quarterfinals with top seeds receiving automatic byes).
-- **Decisive Knockout Tiebreaks:** If an AI game ends in a draw (repetition or move limit), the engine resolves ties objectively using Stockfish final centipawn evaluation, followed by move accuracy %, ensuring a decisive advancing winner.
-- **Pre-Tournament Customizer Wizard:** Customize every contender agent before kickoff (Model, Personality style, Seed, Temperature, Avatar Color, and Engine Depth).
-- **Victory Podium & Championship Reports:** Automatically crowns the Champion 🏆, Runner-Up 🥈, and 3rd Place 🥉, generating a comprehensive tactical and prompt engineering analysis report.
+## Key project structure
 
-### ⚔️ 2. Live Match Arena & Spectator View
-- **Interactive Chessboard:** Built with `react-chessboard` featuring smooth piece movements, legal move indicators, square highlights, and board flipping.
-- **Real-Time Evaluation Bar:** Live Stockfish centipawn advantage bar updating dynamically with every move.
-- **Live Move Stream:** Full SAN move list with accuracy indicators and Stockfish best-move recommendations.
+```text
+Multi-Agent-AI-Chess-Arena/
+├── backend/
+│   ├── app/
+│   │   ├── agents/
+│   │   ├── api/
+│   │   ├── chess/
+│   │   ├── database/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── main.py
+│   ├── tests/
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── README.md
+├── .env.example
+├── docker-compose.yml
+├── README.md
+├── LICENSE
+└── docs/
+```
 
-### 🧠 3. Dual-Layer AI Reasoning & Blunder Guard
-- **Strategic Cognition Layer:** Agents reason over formal strategic taxonomies (*Center Control, King Safety, Piece Activity, Prophylaxis, Passed Pawn Push*), returning confidence ratings, risk classifications, and candidate alternatives.
-- **Blunder Safety Guard:** A Python-side 2-ply tactical interceptor scans every proposed move before it touches the board. If an AI hallucinates or leaves a major piece hanging, the engine issues a `TACTICAL SAFETY ALERT` forcing the model to calculate a safer alternative.
+## Prerequisites
 
-### 🎭 4. Configurable Agent Personalities
-- **Strategic Aggressor:** Seeks piece initiative, kingside attacks, and open diagonals.
-- **Positional Defender:** Solid pawn structures, prophylactic defense, and king safety.
-- **Tactical Master:** Calculation-heavy, dynamic piece sacrifices, and tactical forks.
-- **Endgame Virtuoso:** Proactive passed pawn pushes, king centralization, and endgame simplification.
+- Python 3.11 or newer
+- Node.js 18+
+- A Groq API key: https://console.groq.com/
+- Stockfish engine installed or available in `backend/bin`
 
-### 📊 5. Deep Post-Game Analytics & Replay
-- Head-to-head performance metrics (Accuracy %, Centipawn Loss, Blunder count).
-- Full game replay stepper (`|< < Play > >|`) with synchronized evaluation graph.
-- Export matches to standard **PGN**, **JSON**, or generated Markdown reports.
+## Quick start
 
----
+### 1) Clone the repository
 
-## 🛠️ Tech Stack
-
-| Component | Technologies |
-|---|---|
-| **Backend** | Python 3.12, FastAPI, Pydantic v2, python-chess, SQLAlchemy, Alembic, WebSockets |
-| **Chess Engines** | Stockfish 19 UCI, Groq Cloud API SDK |
-| **Frontend** | React 19, TypeScript, Vite, Tailwind CSS, Lucide React, Recharts, react-chessboard |
-| **Databases** | PostgreSQL 16 (Primary) with automatic SQLite local fallback |
-| **Testing** | Pytest, Vitest, Testing Library |
-
----
-
-## 🚀 Quick Start Guide
-
-### Prerequisites
-- [Python 3.11+](https://www.python.org/)
-- [Node.js 18+](https://nodejs.org/)
-- [Groq API Key](https://console.groq.com/)
-- [Stockfish Engine](https://stockfishchess.org/download/) (A Windows Stockfish executable is bundled in `backend/bin/stockfish.exe`)
-
----
-
-### 1. Clone the Repository
 ```bash
 git clone https://github.com/mustafaabadshah/Multi-Agent-AI-Chess-Arena.git
 cd Multi-Agent-AI-Chess-Arena
 ```
 
----
+### 2) Create environment variables
 
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env` in both the root and `backend/` directories:
+Create the project-level `.env` file from the root example:
+
 ```bash
 cp .env.example .env
-cp backend/.env.example backend/.env
 ```
 
-Edit `.env` and insert your Groq API key:
+Important:
+- The backend reads environment variables from the repository root `.env` file.
+- `backend/.env.example` is a template reference, but the app configuration in `backend/app/config.py` loads `.env` from the parent directory of the backend folder.
+
+Example `.env`:
+
 ```env
 APP_ENV=development
-GROQ_API_KEY=gsk_your_groq_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 
 WHITE_MODEL=qwen/qwen3.8-27b
 BLACK_MODEL=openai/gpt-oss-120b
@@ -141,118 +106,93 @@ DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/chessmind
 SQLITE_FALLBACK=true
 
 STOCKFISH_PATH=backend/bin/stockfish.exe
-STOCKFISH_DEPTH=12
-DEFAULT_MOVE_DELAY_MS=250
+STOCKFISH_DEPTH=15
+
+DEFAULT_MOVE_DELAY_MS=1000
+MOCK_MODE=false
+
+CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173
 ```
-*(Note: If PostgreSQL is not running, the application automatically falls back to local SQLite `chessmind.db` with zero configuration needed).*
 
----
+### 3) Backend setup
 
-### 3. Backend Setup
 ```bash
 cd backend
-
-# Create and activate virtual environment
 python -m venv venv
-# On Windows:
+
+# Windows
 venv\Scripts\activate
-# On Linux/macOS:
+
+# macOS / Linux
 source venv/bin/activate
 
-# Install dependencies
 pip install -r requirements.txt
-
-# Start the FastAPI server
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-The backend API is now running at `http://127.0.0.1:8000` (Swagger docs at `http://127.0.0.1:8000/docs`).
 
----
+The API documentation will be available at:
+- http://127.0.0.1:8000/docs
+- http://127.0.0.1:8000/redoc
 
-### 4. Frontend Setup
-In a new terminal window:
+### 4) Frontend setup
+
+Open a new terminal window:
+
 ```bash
 cd frontend
-
-# Install npm dependencies
 npm install
-
-# Start the Vite development server
 npm run dev
 ```
-Open your browser at `http://127.0.0.1:5173`.
 
----
+Then open:
+- http://127.0.0.1:5173
 
-## 🐳 Docker Deployment
+## Docker setup
 
-To launch the entire platform (PostgreSQL database, FastAPI backend, and React frontend) with a single command:
+You can launch the app with Docker Compose:
+
 ```bash
 docker-compose up --build
 ```
-Access the application at `http://localhost:5173`.
 
----
+This starts:
+- PostgreSQL database
+- FastAPI backend on port 8000
+- React frontend on port 3000
 
-## 🧪 Running Tests
+## Running tests
 
-### Backend Unit & Integration Tests (19 tests)
+Backend:
+
 ```bash
 cd backend
 pytest -v
 ```
 
-### Frontend Unit Tests
+Frontend:
+
 ```bash
 cd frontend
 npm run test
 npm run build
 ```
 
----
+## Notes on project behavior
 
-## 📁 Project Structure
+- PostgreSQL is the primary database, but the app automatically falls back to SQLite when needed.
+- Move validation is strictly enforced before a move is accepted.
+- Agents can be configured with different personalities and model settings.
+- Tournament services resume automatically on backend startup.
 
-```
-Multi-Agent-AI-Chess-Arena/
-├── backend/
-│   ├── app/
-│   │   ├── agents/          # Groq agent implementations, prompt engineering, personalities
-│   │   ├── api/             # FastAPI routers (tournaments, games, moves, models, analysis)
-│   │   ├── chess/           # python-chess referee, board manager, Stockfish evaluator
-│   │   ├── database/        # SQLAlchemy models, repositories, session manager
-│   │   ├── schemas/         # Pydantic v2 schemas and request models
-│   │   ├── services/        # Tournament service, game service, analysis service
-│   │   └── main.py          # FastAPI application & lifespan orchestrator
-│   ├── bin/                 # Stockfish engine binaries
-│   ├── tests/               # Pytest test suite
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # ChessBoard, EvaluationBar, GameControls, Navbar, etc.
-│   │   ├── pages/           # TournamentPage, ArenaPage, AnalysisPage, HistoryPage
-│   │   ├── services/        # API client and WebSocket handlers
-│   │   └── types/           # TypeScript interfaces & types
-│   ├── package.json
-│   └── vite.config.ts
-├── docker-compose.yml
-├── .env.example
-├── .gitignore
-└── README.md
-```
+## License
 
----
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## 📜 License
+## Acknowledgements
 
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 🙏 Acknowledgements
-
-- [Stockfish](https://stockfishchess.org/) - Open-source chess engine.
-- [python-chess](https://python-chess.readthedocs.io/) - Pure Python chess library with move generation and validation.
-- [Groq](https://groq.com/) - High-speed LPU inference engine for frontier LLMs.
-- [react-chessboard](https://github.com/Clariity/react-chessboard) - Chessboard component for React.
+- Stockfish
+- python-chess
+- FastAPI
+- React
+- Groq
+- Tailwind CSS
