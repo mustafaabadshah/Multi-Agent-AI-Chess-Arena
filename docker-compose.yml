@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: chessmind-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: chessmind
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chessmind-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgrespassword@postgres:5432/chessmind
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - WHITE_MODEL=${WHITE_MODEL:-qwen/qwen3.8-27b}
+      - BLACK_MODEL=${BLACK_MODEL:-openai/gpt-oss-120b}
+      - STOCKFISH_PATH=/usr/games/stockfish
+      - STOCKFISH_DEPTH=15
+      - MOCK_MODE=${MOCK_MODE:-false}
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000
+    volumes:
+      - ./backend/bin:/app/bin
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chessmind-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  postgres_data:
