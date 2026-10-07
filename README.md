@@ -30,11 +30,34 @@ FastAPI Backend
 
 ## Tech stack
 
-- Backend: Python 3.11+, FastAPI, SQLAlchemy, python-chess, Pydantic v2
-- Frontend: React 19, TypeScript, Vite, Tailwind CSS, Recharts
-- AI: Groq API + configurable LLM models
-- Evaluation: Stockfish UCI engine
-- Testing: Pytest and Vitest
+- **Backend:** Python 3.11+, FastAPI, SQLAlchemy, python-chess, Pydantic v2
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Recharts, react-chessboard
+- **AI & Reasoning:** Groq API + configurable LLM models (Qwen 3.8 27B, GPT-OSS 120B/20B, Llama 3.3 70B)
+- **Evaluation:** Stockfish 19 UCI engine
+- **Testing:** Pytest and Vitest
+
+---
+
+## 📸 User Interface Showcase
+
+### 🏆 1. Knockout Tournament Arena & Championship Podium
+Autonomous bracket progression supporting 4 to 6 models with live spectator board, Stockfish tiebreak resolution, and crowned tournament champion:
+![Tournament Arena Bracket](docs/images/tournament_bracket.png)
+
+### ⚔️ 2. Real-Time 1v1 Arena & AI Decision Inspector
+Interactive chessboard featuring live evaluation bar, move quality classifications (*Best Move, Mistake, Blunder*), and the **Decision Inspector** showing the AI's strategic rationale:
+![Live Match Arena](docs/images/live_match_arena.png)
+
+### 📊 3. Post-Game Analysis & Evaluation Curve
+Comprehensive match debriefing comparing player accuracy %, Stockfish centipawn loss curves across all plies, and tactical strategy distributions:
+![Post-Game Analysis](docs/images/match_analysis.png)
+
+### 📈 4. Cross-Model Benchmark Leaderboard & Match Archives
+Historical aggregate benchmarks comparing model win rates, blunder frequencies, opening preferences, and full game archives with PGN downloads:
+![Model Cross-Comparison Benchmark](docs/images/model_leaderboard.png)
+![Match Archives & History](docs/images/game_history.png)
+
+---
 
 ## Key project structure
 
