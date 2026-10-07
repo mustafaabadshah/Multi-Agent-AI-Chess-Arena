@@ -41,5 +41,38 @@
 
 ## Real-Time WebSocket
 
-- `WS /ws/games/{id}`: Real-time event stream.
+- `WS /ws/games/{id}`: Real-time game event stream.
   - Events: `agent_thinking`, `decision_ready`, `move_played`, `critical_move`, `game_completed`, `game_paused`.
+- `WS /ws/tournaments`: Real-time tournament progression event broadcast.
+  - Events: `tournament_match_started`, `tournament_match_completed`, `tournament_completed`.
+
+## Tournaments (Knockout Engine)
+
+- `POST /api/tournaments`: Create and configure a 4 or 6-model knockout tournament bracket.
+  ```json
+  {
+    "name": "Championship Grand Prix",
+    "participants": [
+      {
+        "id": "p1",
+        "seed": 1,
+        "name": "Qwen 3.8 Titan",
+        "model": "qwen/qwen3.8-27b",
+        "personality": "Strategic Aggressor",
+        "temperature": 0.2,
+        "color_theme": "#10b981"
+      }
+    ],
+    "settings": {
+      "max_moves": 40,
+      "move_delay_ms": 250,
+      "stockfish_depth": 12
+    },
+    "auto_start": true
+  }
+  ```
+- `GET /api/tournaments`: List tournaments with summary standings, current round, and crowned champion.
+- `GET /api/tournaments/{id}`: Retrieve comprehensive tournament bracket, live match board FEN, tiebreak notes, and generated championship analysis report.
+- `POST /api/tournaments/{id}/start`: Start or resume autonomous bracket match execution.
+- `POST /api/tournaments/{id}/pause`: Pause autonomous match progression.
+- `DELETE /api/tournaments/{id}`: Delete tournament record.
