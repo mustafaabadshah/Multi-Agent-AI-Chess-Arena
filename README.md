@@ -218,4 +218,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - FastAPI
 - React
 - Groq
-- Tailwind CSS
+- Tailwind Css
